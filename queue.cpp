@@ -199,7 +199,6 @@ inline int queue_push(struct queue *q, const void *element) {
     return 0;
 }
 
-// pop со старта, старт переходит через конец
 inline int queue_pop(struct queue *q, void *element) {
     assert(q);
     assert(element);

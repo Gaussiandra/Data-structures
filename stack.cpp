@@ -77,7 +77,6 @@ int stack_pop(struct stack *stack, void *element) {
 
     RETURN_ON_ERROR(stack_top(stack, element));
     stack->size--;
-    // уменьшать размер через гистерезис
 
     return 0;
 }
@@ -133,5 +132,3 @@ int main() {
     stack_print(st, print_double);
     st = stack_delete(st);
 }
-
-// Должно быть выведено [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]\n
