@@ -150,35 +150,3 @@ void list_print(struct list const *head) {
         printf("[]\n");
     }
 }
-
-int main() {
-    struct list *head = list_new(0);
-    
-    head = list_insert(head, 1);
-    head = list_insert(head, 2);
-    head = list_insert(head, 3);
-    head = list_insert(head, 4);
-    head = list_insert(head, 5);
-    head = list_insert(head, 6);
-    head = list_insert(head, 7);
-    head = list_insert(head, 8);
-    head = list_insert(head, 9);
-    head = list_insert(head, 10);
-
-    list_find(head, 1);
-    list_find(head, 10);
-    list_find(head, 0);
-    list_find(head, 20);
-
-    list_print(head);
-
-    head = list_erase(head, 5);
-    head = list_erase(head, 5);
-    head = list_erase(head, 10);
-    head = list_erase(head, 0);
-
-    list_print(head);
-
-    head = list_delete(head);
-    list_print(head);
-}
