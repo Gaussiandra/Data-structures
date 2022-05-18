@@ -15,65 +15,73 @@ inline size_t rg(size_t k) {
     return k & -k;
 }
 
-inline base_t getSum(base_t arr[], size_t r) {
+inline base_t getPrefixSum(base_t arr[], size_t m,
+                     size_t x2, size_t y2) {
     base_t sum = 0;
-    for (size_t i = r; i >= 1; i -= rg(i)) {
-        sum += arr[i];
+    for (size_t i = y2; i >= 1; i -= rg(i)) {
+        for (size_t j = x2; j >= 1; j -= rg(j)) {
+            sum += arr[i * m + j];
+        }
     }
 
     return sum;
 }
 
-inline base_t getSum(base_t arr[], size_t l, size_t r) {
-
-    if (l > r) {
-        return 0;
-    }
-    else if (l == r) {
-        return arr[l];
-    }
-    else {
-        return getSum(arr, r) - getSum(arr, l - 1);
-    }
+inline base_t getSum(base_t arr[], size_t m,
+                     size_t x1, size_t y1,
+                     size_t x2, size_t y2) {
+    return getPrefixSum(arr, m, x2, y2)     - getPrefixSum(arr, m, x1 - 1, y2) -
+           getPrefixSum(arr, m, x2, y1 - 1) + getPrefixSum(arr, m, x1 - 1, y1 - 1);
 }
 
-void changeValue(base_t arr[], size_t n, size_t idx, base_t value) {
-    base_t delta = arr[idx] - value;
-    for ( ; idx <= n; idx += rg(idx)) {
-        arr[idx] += delta;
+void setValue(base_t arr[], size_t n, size_t m,
+                 size_t x, size_t y, base_t value) {
+    base_t delta = value - getSum(arr, m, x, y, x, y);
+    for (size_t i = y; i <= n; i += rg(i)) {
+        for (size_t j = x; j <= m; j += rg(j)) {
+            arr[i * m + j] += delta;
+        }
     }
-}
-
-base_t *buildFenwick(base_t arr[], size_t n) {
-    base_t *fenwick = (base_t*) calloc(n + 1, sizeof(base_t));
-
-    fenwick[1] = arr[1];
-    for (size_t i = 2; i < n + 1; ++i) {
-        fenwick[i] = getSum(fenwick, i - rg(i) + 1, i - 1) + arr[i];
-    }
-
-    return fenwick;
 }
 
 int main() {
-    size_t n = 0;
-    scanf("%zu", &n);
-    base_t *input = (base_t*) calloc(n + 1, sizeof(base_t));
+    size_t n = 1002, m = 1002;
+    base_t *fenwick = (base_t*) calloc(n * m, sizeof(base_t));
 
-    for (size_t i = 1; i < n + 1; ++i) {
-        base_t curVal = 0;
-        scanf(baseSpec, &curVal);
-        input[i] = curVal;
+    char op[11] = {0};
+    while (scanf("%10s", op) != EOF) {
+        switch (op[0]) {
+        case 'A': {
+            size_t x = 0, y = 0;
+            base_t v = 0;
+            scanf(baseSpec" %s %zu %zu", &v, op, &x, &y);
+            setValue(fenwick, n, m, x + 1, y + 1, getSum(fenwick, m, x + 1, y + 1, x + 1, y + 1) + v);
+            break;
+        }
+        case 'R': {
+            size_t x = 0, y = 0;
+            scanf("%*c %zu %zu", &x, &y);
+            setValue(fenwick, n, m, x + 1, y + 1, 0);
+            break;
+        }
+        case 'C': {
+            size_t x = 0, y = 0;
+            base_t v = 0;
+            scanf("%s %zu %zu %s "baseSpec, op, &x, &y, op, &v);
+            setValue(fenwick, n, m, x + 1, y + 1, v);
+            break;
+        }
+        case 'S': {
+            size_t x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+            scanf("%s %zu %zu %s %zu %zu", op, &x1, &y1, op, &x2, &y2);
+
+            printf(baseSpec"\n", getSum(fenwick, m, x1 + 1, y1 + 1, x2 + 1, y2 + 1));
+            break;
+        }
+        default: {
+            break;
+        }
     }
-
-    base_t *fenwick = buildFenwick(input, n);
-
-    for (int i = 0; i < n + 1; ++i) {
-        printf("%d ", fenwick[i]);
     }
-    printf("\n");
-
-    printf(baseSpec, getSum(fenwick, 1, 8));
-
     free(fenwick);
 }
