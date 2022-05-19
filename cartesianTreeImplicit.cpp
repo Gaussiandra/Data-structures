@@ -102,7 +102,6 @@ node *remove(node *t, size_t idx) {
 
 void deleteCT(node *t) {
     if (t->left) {
-
         deleteCT(t->left);
     }
     if (t->right) {
@@ -144,7 +143,6 @@ int main() {
             printf("%s %d\n", found->data.name, found->data.salary);
             break;
         }
-        
         default:
             break;
         }
